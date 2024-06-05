@@ -7,15 +7,12 @@ taxa_servico = 3  # Taxa média de serviço (clientes atendidos por unidade de t
 tempo_simulacao = 10  # Tempo total de simulação
 
 def gerar_tempos_de_chegada(taxa_chegada, tempo_total):
-    """Gera os tempos de chegada dos clientes."""
-    return np.cumsum(np.random.exponential(1/taxa_chegada, int(taxa_chegada * tempo_total * 1.5)))
+    return np.cumsum(np.random.exponential(1 / taxa_chegada, int(taxa_chegada * tempo_total * 1.5)))
 
 def gerar_tempos_de_servico(taxa_servico, n_clientes):
-    """Gera os tempos de serviço dos clientes."""
-    return np.random.exponential(1/taxa_servico, n_clientes)
+    return np.random.exponential(1 / taxa_servico, n_clientes)
 
 def simular_fila_mm_inf(taxa_chegada, taxa_servico, tempo_simulacao):
-    """Simula uma fila M/M/∞."""
     tempos_de_chegada = gerar_tempos_de_chegada(taxa_chegada, tempo_simulacao)
     tempos_de_chegada = tempos_de_chegada[tempos_de_chegada <= tempo_simulacao]
     n_clientes = len(tempos_de_chegada)
@@ -27,7 +24,6 @@ def simular_fila_mm_inf(taxa_chegada, taxa_servico, tempo_simulacao):
     return tempos_inicio_servico, tempos_fim_servico, n_clientes, tempos_de_chegada, tempos_de_servico
 
 def plotar_simulacao(tempos_inicio_servico, tempos_fim_servico, n_clientes):
-    """Plota a simulação da fila M/M/∞."""
     plt.figure(figsize=(10, 6))
     for i in range(n_clientes):
         plt.plot([tempos_inicio_servico[i], tempos_fim_servico[i]], [i, i], 'bo-', markersize=5)
@@ -38,7 +34,6 @@ def plotar_simulacao(tempos_inicio_servico, tempos_fim_servico, n_clientes):
     plt.show()
 
 def plotar_probabilidade_clientes(ρ):
-    """Plota a probabilidade de existirem n clientes no sistema em função da taxa de ocupação."""
     def Pn(n, ρ):
         return (np.exp(-ρ) * ρ**n) / np.math.factorial(n)
     
@@ -55,7 +50,6 @@ def plotar_probabilidade_clientes(ρ):
     plt.show()
 
 def plotar_numero_medio_clientes(ρ_values):
-    """Plota o número médio de clientes no sistema em função da taxa de ocupação."""
     Ls_values = [ρ for ρ in ρ_values]
 
     plt.figure(figsize=(10, 6))
@@ -68,8 +62,7 @@ def plotar_numero_medio_clientes(ρ_values):
     plt.show()
 
 def plotar_tempo_medio_espera(μ_values):
-    """Plota o tempo médio de espera no sistema em função da taxa de serviço."""
-    Ws_values = [1/μ for μ in μ_values]
+    Ws_values = [1 / μ for μ in μ_values]
 
     plt.figure(figsize=(10, 6))
     plt.plot(μ_values, Ws_values, label='Ws(μ)')
@@ -80,25 +73,19 @@ def plotar_tempo_medio_espera(μ_values):
     plt.grid(True)
     plt.show()
 
-# Simulação da fila M/M/∞
 tempos_inicio_servico, tempos_fim_servico, n_clientes, tempos_de_chegada, tempos_de_servico = simular_fila_mm_inf(taxa_chegada, taxa_servico, tempo_simulacao)
-
-# Plotar simulação
 plotar_simulacao(tempos_inicio_servico, tempos_fim_servico, n_clientes)
 
-# Exibir resultados da simulação
 print(f"Total de clientes atendidos: {n_clientes}")
 print(f"Tempos de chegada dos clientes: {tempos_de_chegada}")
 print(f"Tempos de serviço dos clientes: {tempos_de_servico}")
 
-# Definição de variáveis aleatórias para os outros gráficos
-np.random.seed(42)  # Para reprodutibilidade
+np.random.seed(42)
 
-λ = np.random.uniform(10, 100)  # Taxa média de chegada (clientes por unidade de tempo)
-μ = np.random.uniform(5, 20)  # Taxa média de serviço (clientes atendidos por unidade de tempo)
-ρ = λ / μ  # Taxa de ocupação
+λ = np.random.uniform(10, 100)
+μ = np.random.uniform(5, 20)
+ρ = λ / μ
 
-# Plotar gráficos adicionais
 plotar_probabilidade_clientes(ρ)
 ρ_values = np.linspace(0.1, 5, 100)
 plotar_numero_medio_clientes(ρ_values)
